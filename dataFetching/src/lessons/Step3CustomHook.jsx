@@ -1,4 +1,5 @@
 import { useFetch } from '../hooks/useFetch'
+import { useState } from 'react'
 
 // STEP 3: use your useFetch hook (src/hooks/useFetch.js).
 //
@@ -10,14 +11,33 @@ import { useFetch } from '../hooks/useFetch'
 //        Click Step 3 away and back: does it refetch from scratch? That motivates Step 4.
 
 export default function Step3CustomHook() {
+  const [limit, setLimit] = useState(5);
   const { data, loading, error } = useFetch(
-    'https://jsonplaceholder.typicode.com/posts?_limit=5'
-  )
+    `https://jsonplaceholder.typicode.com/posts?_limit=${limit}`
+  );
+
+  const toggleLimit = () => {
+    setLimit(limit === 5 ? 10 : 5);
+  };
+
+
+
+
   console.log({ data, loading, error })
 
   return (
     <div>
       <h2>Step 3: Custom hook</h2>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      <ul>
+        {data?.map((post) => (
+          <li key={post.id}>{post.title}</li>
+        ))}
+      </ul>
+      <button onClick={toggleLimit}>
+        Toggle
+      </button>
     </div>
   )
 }

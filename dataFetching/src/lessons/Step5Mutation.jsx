@@ -24,9 +24,54 @@ export default function Step5Mutation() {
   const [title, setTitle] = useState('')
   const queryClient = useQueryClient()
 
+  const {data: posts, isLoading, error} = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
+      if (!res.ok) {
+        throw new Error('Failed to fetch posts')
+      }
+      return res.json()
+    }
+  })
+
+  const mutation = useMutation({
+    mutationFn: async (title) => {
+      const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, body: '', userId: 1 }),
+      })
+      if (!res.ok) {
+        throw new Error('Failed to create post')
+      }
+      return res.json()
+    },
+    onSuccess: (newPost) => {
+      queryClient.setQueryData(['posts'], (old) => [newPost, ...old])
+    }
+  })
+
   return (
     <div>
       <h2>Step 5: Mutations</h2>
+      <form onSubmit={(e) => {e.preventDefault();}}>
+        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <button onClick={() => { {title &&mutation.mutate(title)}; setTitle('') }} disabled={mutation.isPending}>
+          Add Post
+        </button>
+      </form>
+      {mutation.isPending && <p>Adding post...</p>}
+      {mutation.error && <p>Error: {mutation.error.message}</p>}
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {posts && (
+        <ul>
+          {posts.map(post => (
+            <li key={post.id}>{post.title}</li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

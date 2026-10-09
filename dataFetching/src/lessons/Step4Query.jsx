@@ -19,10 +19,38 @@ import { useQuery } from '@tanstack/react-query'
 export default function Step4Query() {
   const [userId, setUserId] = useState(1)
 
+  const { data, isPending, error, isFetching } = useQuery({
+    queryKey: ['user', userId],
+    staleTime: 60_000,
+    queryFn: async () => {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch user')
+      }
+      return response.json()
+    }
+  })
+
   return (
     <div>
       <h2>Step 4: TanStack Query</h2>
+      <div>
+        {Array.from({ length: 10 }, (_, i) => i + 1).map(id => (
+          <button key={id} onClick={() => setUserId(id)}>
+            {id}
+          </button>
+        ))}
+      </div>
       <p>Selected: {userId}</p>
+      {isFetching && <p>Fetching...</p>}
+      {isPending && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data && (
+        <div>
+          <p>{data.name}</p>
+          <p>{data.email}</p>
+        </div>
+      )}
     </div>
   )
 }
