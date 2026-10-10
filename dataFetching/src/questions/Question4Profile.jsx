@@ -27,6 +27,13 @@ export default function Question4Profile() {
   const { data: user, isLoading, error } = useUserProfile(userId)
   const updateProfile = useUpdateUserProfile(userId)
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateProfile.mutate({ name, phone });
+    setName('');
+    setPhone('');
+  }
+
   return (
     <div>
       <h2>Question 4: Profile Editor</h2>
@@ -54,7 +61,14 @@ export default function Question4Profile() {
             <p>{user.phone}</p>
           </div>}
       </div>
-      {/* 3. Edit form to update name and phone */}
+      {
+      <form className='flex flex-col gap-4 bg-gray-700 p-4 my-2 rounded-xl' onSubmit={handleSubmit}>
+        <h2 className='text-gray-200'>Edit Details</h2>
+        <input type="text" className='bg-gray-800 rounded-xl p-2' placeholder="Name" value={name} onChange={(e)=>setName(e.target.value)}></input>
+        <input type="text" className='bg-gray-800 rounded-xl p-2' placeholder="Phone Number" value={phone} onChange={(e)=>setPhone(e.target.value)}></input>
+        <button type="submit" disabled={updateProfile.isPending} className='bg-blue-500 max-w-20 rounded-md p-1 text-gray-100'>{updateProfile.isPending ? 'Saving...' : 'Edit'}</button>       
+      </form>
+      }
     </div>
   )
 }

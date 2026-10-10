@@ -26,7 +26,7 @@ export function useUserProfile(userId) {
 
   const useQueryResult = useQuery({
     queryKey: ['user', userId],
-    queryFn: async (userId) => {
+    queryFn: async () => {
       const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
       if (!res.ok) {
         throw new Error('Failed to fetch user profile')
@@ -41,7 +41,7 @@ export function useUserProfile(userId) {
 export function useUpdateUserProfile(userId) {
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (userId) => {
+    mutationFn: async ({ name, phone }) => {
       const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
@@ -54,13 +54,10 @@ export function useUpdateUserProfile(userId) {
       }
       return res.json()
     },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(['user'], (oldUser) => {
-        return oldUser.map(user => user.id === variables.id ? {
-          ...user.name = variables.name,
-          ...user.phone = variables.phone
-        } : user)
-      } )
+    onSuccess: (data) => {
+      queryClient.setQueryData(['user', userId], (oldUser) => ({
+        ...oldUser, ...data
+      }))
     }
   })
   return mutation
