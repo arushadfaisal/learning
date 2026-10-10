@@ -24,15 +24,36 @@ export default function Question4Profile() {
   // const { data: user, isLoading, error } = useUserProfile(userId)
   // const updateProfile = useUpdateUserProfile(userId)
 
+  const { data: user, isLoading, error } = useUserProfile(userId)
+  const updateProfile = useUpdateUserProfile(userId)
+
   return (
     <div>
       <h2>Question 4: Profile Editor</h2>
       <p style={{ color: '#666' }}>
         Practice: Single-item query + PATCH mutation + cache update without autocomplete help!
       </p>
-
-      {/* 1. User selector buttons (1, 2, 3) */}
-      {/* 2. Display current profile details */}
+      
+      {<div className='flex flex-row gap-2'>
+        <ul className='flex flex-row gap-2'>
+        {[1,2,3].map((id) => (
+          <li key={id}>
+            <button className='p-2 bg-gray-700 rounded-md' onClick={() => setUserId(id)} disabled={userId === id || isLoading}>{id}</button>
+          </li>
+        ))}
+        </ul>
+      </div>
+      }
+      
+      <div>
+        {isLoading && <p>Loading...</p>}
+        {error && <p>Error: {error.message}</p>}
+        {user && 
+          <div className='flex flex-col gap-2'>
+            <p>{user.name}</p>
+            <p>{user.phone}</p>
+          </div>}
+      </div>
       {/* 3. Edit form to update name and phone */}
     </div>
   )

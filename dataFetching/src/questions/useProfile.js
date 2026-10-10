@@ -22,11 +22,46 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 //   - Return the mutation object.
 
 export function useUserProfile(userId) {
-  // Your code here...
-  return {}
+  const queryClient = useQueryClient()
+
+  const useQueryResult = useQuery({
+    queryKey: ['user', userId],
+    queryFn: async (userId) => {
+      const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+      if (!res.ok) {
+        throw new Error('Failed to fetch user profile')
+      }
+      return res.json()
+    }
+  })
+
+  return useQueryResult
 }
 
 export function useUpdateUserProfile(userId) {
-  // Your code here...
-  return {}
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async (userId) => {
+      const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name, phone
+        })
+      })
+      if (!res.ok){
+        throw new Error('Failed to update')
+      }
+      return res.json()
+    },
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(['user'], (oldUser) => {
+        return oldUser.map(user => user.id === variables.id ? {
+          ...user.name = variables.name,
+          ...user.phone = variables.phone
+        } : user)
+      } )
+    }
+  })
+  return mutation
 }
