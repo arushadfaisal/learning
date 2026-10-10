@@ -21,11 +21,45 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 //   - Return the mutation object.
 
 export function useFilteredPosts(selectedUserId) {
-  // Your code here...
-  return {}
+
+  const useQueryResult = useQuery({
+    queryKey: ['posts', { userId: selectedUserId }],
+    queryFn: async () => {
+      const url = 
+        selectedUserId === 'ALL'
+        ? `https://jsonplaceholder.typicode.com/posts?_limit=5`
+        : `https://jsonplaceholder.typicode.com/posts?userId=${selectedUserId}&_limit=5`
+      const res = await fetch(url)
+      if (!res.ok) throw new Error('Failed to fetch posts')
+      return res.json()
+    }
+  })
+  return useQueryResult
 }
 
 export function useCreatePost(selectedUserId) {
-  // Your code here...
-  return {}
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async ({ title, body }) => {
+      const res = await fetch(`https://jsonplaceholder.typicode.com/posts`, {
+        method: 'POST',
+        headers: {'Content-type' : 'application/json'},
+        body: JSON.stringify({
+          title, body
+        })
+      })
+      if (!res.ok) {
+        throw new Error('Failed to create new post')
+      }
+      return res.json()
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['posts', {userId : selectedUserId}], (oldPosts = []) => (
+        [data, ...oldPosts]
+      )
+    )}
+
+    
+  })
+  return mutation
 }
