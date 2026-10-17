@@ -115,3 +115,22 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Accessible label injection for @container stacked tables (Step 5 & Question 6) */
+@container (width < 600px) {
+  .responsive-td:nth-child(2)::before {
+    content: var(--label-2) ": " / var(--label-2);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .responsive-td:nth-child(3)::before {
+    content: var(--label-3) ": " / var(--label-3);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .responsive-td:nth-child(4)::before {
+    content: var(--label-4) ": " / var(--label-4);
+    font-weight: 600;
+    color: var(--text);
+  }
+}
