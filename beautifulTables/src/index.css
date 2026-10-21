@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+/* Clean base setup so Tailwind utilities never fight with default browser/template styles */
+@layer base {
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
