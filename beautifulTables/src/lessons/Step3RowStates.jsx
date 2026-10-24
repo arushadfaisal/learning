@@ -62,8 +62,8 @@ export default function Step3RowStates() {
                   {/* TODO 2a: Wire the Select All checkbox */}
                   <input
                     type="checkbox"
-                    checked={false}
-                    onChange={() => {}}
+                    checked={allSelected}
+                    onChange={() => toggleSelectAll()}
                     className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-indigo-500 accent-indigo-500 cursor-pointer"
                   />
                 </th>
@@ -78,13 +78,13 @@ export default function Step3RowStates() {
 
                 return (
                   // TODO 1: Add `group transition-colors` + conditional selected/hover background classes
-                  <tr key={member.id} className="">
+                  <tr key={member.id} className={`group transition-colors ${isSelected ? 'bg-indigo-500/10 hover:bg-indigo-500/15' : 'hover:bg-slate-800/50'}`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {/* TODO 2b: Wire individual row checkbox to isSelected and toggleSelect(member.id) */}
                       <input
                         type="checkbox"
-                        checked={false}
-                        onChange={() => {}}
+                        checked={isSelected}
+                        onChange={() => toggleSelect(member.id)}
                         className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-indigo-500 accent-indigo-500 cursor-pointer"
                       />
                     </td>
@@ -104,7 +104,7 @@ export default function Step3RowStates() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       {/* TODO 3: Hide this action group by default (`opacity-0`) and reveal on `group-hover:opacity-100` */}
-                      <div className="inline-flex items-center gap-1">
+                      <div className="inline-flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
                         <button
                           onClick={() => setLastAction(`Edited ${member.name}`)}
                           className="rounded-md px-2.5 py-1 text-xs font-medium text-slate-300 hover:bg-slate-700/70 hover:text-white cursor-pointer"
