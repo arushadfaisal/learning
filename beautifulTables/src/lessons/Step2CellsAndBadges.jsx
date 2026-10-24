@@ -55,7 +55,7 @@ export default function Step2CellsAndBadges() {
               <th scope="col" className="px-6 py-3.5">Role</th>
               <th scope="col" className="px-6 py-3.5">Status</th>
               {/* TODO 4a: Right-align this numeric header! */}
-              <th scope="col" className="px-6 py-3.5">Salary</th>
+              <th scope="col" className="px-6 py-3.5 text-right">Salary</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/70 text-sm text-slate-300">
@@ -64,23 +64,33 @@ export default function Step2CellsAndBadges() {
               return (
                 <tr key={member.id}>
                   {/* TODO 1: Build the Avatar + Name + Email composite cell */}
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {member.name} ({member.email})
+                  <td className="px-6 py-4 whitespace-nowrap flex items-center gap-3">
+                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ring-1 ring-inset ${member.avatarColor}`}>
+                      {member.avatar}
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="font-medium text-slate-100">{member.name}</div>
+                      <div className="text-xs text-slate-400">{member.email}</div>
+                    </div>
                   </td>
-
                   {/* TODO 2: Stack Role + Department */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {member.role} - {member.department}
+                    <div className="font-medium text-slate-200">{member.role}</div>
+                    <div className="text-xs text-slate-500">{member.department}</div>
                   </td>
-
                   {/* TODO 3: Render a soft pill badge with a colored status dot */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {member.status}
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${style.pill}`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
+                      {member.status}
+                    </span>
                   </td>
 
                   {/* TODO 4b: Right-align and apply font-mono tabular-nums */}
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    ${member.salary}
+                  <td className="px-6 py-4 whitespace-nowrap text-right font-mono tabular-nums font-medium text-slate-200">
+                    ${member.salary.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </td>
                 </tr>
               )

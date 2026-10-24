@@ -26,29 +26,29 @@ import { TEAM_MEMBERS } from '../data/mockData'
 
 export default function Step1Foundation() {
   return (
-    <div>
+    <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg">
       {/* TODO 1: Add the Card Frame classes to this wrapper div */}
-      <div>
+      <div className="overflow-x-auto">
         {/* TODO 2: Replace ugly border classes on <table> with w-full divide-y divide-slate-800 */}
-        <table className="w-full border border-slate-500">
+        <table className="w-full divide-y divide-slate-800 text-left">
           {/* TODO 3: Style <thead> with muted uppercase tracking and give <th> px-6 py-3.5 */}
-          <thead>
+          <thead className="bg-slate-900/90 text-xs font-semibold uppercase tracking-wider text-slate-400">
             <tr>
-              <th scope="col" className="border border-slate-600 p-1">Name</th>
-              <th scope="col" className="border border-slate-600 p-1">Role</th>
-              <th scope="col" className="border border-slate-600 p-1">Department</th>
-              <th scope="col" className="border border-slate-600 p-1">Last Active</th>
+              <th scope="col" className="px-6 py-3.5">Name</th>
+              <th scope="col" className="px-6 py-3.5">Role</th>
+              <th scope="col" className="px-6 py-3.5">Department</th>
+              <th scope="col" className="px-6 py-3.5">Last Active</th>
             </tr>
           </thead>
 
           {/* TODO 4: Add divide-y to <tbody> and px-6 py-4 whitespace-nowrap to each <td> */}
-          <tbody>
+          <tbody className="divide-y divide-slate-800/70 text-sm text-slate-300">
             {TEAM_MEMBERS.map((member) => (
               <tr key={member.id}>
-                <td className="border border-slate-600 p-1">{member.name}</td>
-                <td className="border border-slate-600 p-1">{member.role}</td>
-                <td className="border border-slate-600 p-1">{member.department}</td>
-                <td className="border border-slate-600 p-1">{member.lastActive}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{member.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{member.role}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{member.department}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{member.lastActive}</td>
               </tr>
             ))}
           </tbody>
