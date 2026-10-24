@@ -35,7 +35,20 @@ export default function Step4SortAndFilter() {
   }
 
   // TODO 1 & TODO 2: Filter TEAM_MEMBERS by search + statusFilter, then sort by sortConfig!
-  const processedMembers = TEAM_MEMBERS
+  const processedMembers = TEAM_MEMBERS.filter((member) => {
+    const matchesSearch = member.name.toLowerCase().includes(search.toLowerCase()) ||
+      member.role.toLowerCase().includes(search.toLowerCase())
+    const matchesStatus = statusFilter === 'ALL' || member.status === statusFilter
+    return matchesSearch && matchesStatus
+  }).sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === 'asc' ? -1 : 1
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === 'asc' ? 1 : -1
+    }
+    return 0
+  })
 
   return (
     <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg">
@@ -57,11 +70,10 @@ export default function Step4SortAndFilter() {
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
-                statusFilter === status
-                  ? 'bg-indigo-500/20 text-indigo-300 ring-1 ring-inset ring-indigo-500/40'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-              }`}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${statusFilter === status
+                ? 'bg-indigo-500/20 text-indigo-300 ring-1 ring-inset ring-indigo-500/40'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                }`}
             >
               {status}
             </button>
@@ -75,14 +87,14 @@ export default function Step4SortAndFilter() {
           <thead className="bg-slate-900/60 text-xs font-semibold uppercase tracking-wider text-slate-400">
             <tr>
               {/* TODO 3a: Make Member header sortable on click */}
-              <th scope="col" className="px-6 py-3.5">
-                Member
+              <th onClick={() => handleSort('name')} scope="col" className={`px-6 py-3.5 cursor-pointer select-none hover:text-slate-200 transition-colors ${sortConfig.key === 'name' ? 'text-white' : 'text-slate-400'}`}>
+                Member {sortConfig.key === 'name' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
               </th>
               <th scope="col" className="px-6 py-3.5">Role</th>
               <th scope="col" className="px-6 py-3.5">Status</th>
               {/* TODO 3b: Make Salary header sortable on click */}
-              <th scope="col" className="px-6 py-3.5 text-right">
-                Salary
+              <th onClick={() => handleSort('salary')} scope="col" className={`px-6 py-3.5 text-right cursor-pointer select-none hover:text-slate-200 transition-colors ${sortConfig.key === 'salary' ? 'text-white' : 'text-slate-400'}`}>
+                Salary {sortConfig.key === 'salary' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
               </th>
             </tr>
           </thead>

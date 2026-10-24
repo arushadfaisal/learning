@@ -47,11 +47,10 @@ export default function Step5SkeletonsAndEmpty() {
           <button
             key={tab.id}
             onClick={() => setViewMode(tab.id)}
-            className={`rounded-md px-3 py-1.5 font-medium cursor-pointer ${
-              viewMode === tab.id
-                ? 'bg-indigo-500/20 text-indigo-300 ring-1 ring-inset ring-indigo-500/30'
-                : 'text-slate-400 hover:bg-slate-800'
-            }`}
+            className={`rounded-md px-3 py-1.5 font-medium cursor-pointer ${viewMode === tab.id
+              ? 'bg-indigo-500/20 text-indigo-300 ring-1 ring-inset ring-indigo-500/30'
+              : 'text-slate-400 hover:bg-slate-800'
+              }`}
           >
             {tab.label}
           </button>
@@ -73,15 +72,43 @@ export default function Step5SkeletonsAndEmpty() {
             <tbody className="divide-y divide-slate-800/70 text-sm text-slate-300">
               {/* TODO 1: Replace this ugly Loading text with 3 shimmer skeleton rows! */}
               {viewMode === 'loading' && (
-                <tr>
-                  <td colSpan={4} className="p-4">Loading...</td>
-                </tr>
+                Array.from({ length: 3 }).map((_value, index) => (
+                  <tr key={index}>
+                    <td scope="col" className="px-6 py-4">
+                      <div className='flex items-center gap-3'>
+                        <div className="h-9 w-9 rounded-full bg-slate-800 animate-pulse"></div>
+                        <div className="flex flex-col gap-1">
+                          <div className="h-3.5 w-28 rounded bg-slate-800 animate-pulse"></div>
+                          <div className="h-2.5 w-36 rounded bg-slate-800 animate-pulse"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      <div className="h-3.5 w-32 rounded bg-slate-800 animate-pulse"></div>
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      <div className="h-5 w-16 rounded-full bg-slate-800 animate-pulse"></div>
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      <div className="ml-auto h-3.5 w-20 rounded bg-slate-800 animate-pulse"></div>
+                    </td>
+                  </tr>
+                ))
               )}
 
               {/* TODO 2: Upgrade this Empty State with centered layout, description, and Reset button */}
               {viewMode !== 'loading' && paginatedRows.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="p-4">No data.</td>
+                  <td colSpan={4} className="px-6 py-12 text-center">
+                    <h3 className="text-base font-semibold text-white">No team members found</h3>
+                    <p className="mt-1 text-sm text-slate-400">Get started by adding a new team member.</p>
+                    <button
+                      onClick={() => setViewMode('data')}
+                      className="mt-4 rounded-md bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-indigo-500/30 cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  </td>
                 </tr>
               )}
 
@@ -116,6 +143,25 @@ export default function Step5SkeletonsAndEmpty() {
         </div>
 
         {/* TODO 3: Add a clean Pagination Footer bar here with Previous / Next buttons */}
+        <div className="flex items-center justify-between border-t border-slate-800 bg-slate-900/90 px-6 py-3 text-xs text-slate-400">
+          <span>Showing {startIndex + 1} to {Math.min(startIndex + PAGE_SIZE, totalItems)} of {totalItems} results</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              className="rounded-md bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-indigo-500/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+              className="rounded-md bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-indigo-500/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
