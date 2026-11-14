@@ -26,8 +26,10 @@ function useDebounce(value, delayMs = 400) {
 
   useEffect(() => {
     // TODO 1: Delay updating `debouncedValue` by `delayMs` using setTimeout + clearTimeout cleanup!
-    void setDebouncedValue
-    void delayMs
+    const id = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delayMs)
+    return () => clearTimeout(id)
   }, [value, delayMs])
 
   return debouncedValue
@@ -44,7 +46,22 @@ export default function Step3DebounceAndThrottle() {
 
   const triggerToast = (message) => {
     // TODO 2: Clear any existing `toastTimerRef.current` before starting a new 2500ms timeout!
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current)
+    }
     setToastMessage(message)
+    toastTimerRef.current = setTimeout(() => {
+      setToastMessage(null)
+      toastTimerRef.current = null
+    }, 2500)
+
+    useEffect(() => {
+      return () => {
+        if (toastTimerRef.current) {
+          clearTimeout(toastTimerRef.current)
+        }
+      }
+    }, [])
   }
 
   const filteredArticles = KNOWLEDGE_BASE_ARTICLES.filter((art) => {

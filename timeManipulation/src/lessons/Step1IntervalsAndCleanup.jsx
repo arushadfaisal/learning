@@ -32,14 +32,21 @@ export default function Step1IntervalsAndCleanup() {
   useEffect(() => {
     // TODO 1 & TODO 2: Fix the stale closure, guard with `if (!isRunning) return`,
     // and return `() => clearInterval(id)`!
-    setInterval(() => {
-      setNow(new Date())
-      setUptimeSeconds(uptimeSeconds + 1) // BUG: Stale closure! Stuck at 1.
-    }, 1000)
-  }, [])
+    if (!isRunning) return;
+      const id =setInterval(() => {
+        setNow(new Date())
+        setUptimeSeconds((prev) => prev + 1) // BUG: Stale closure! Stuck at 1.
+      }, 1000)
+      return () => clearInterval(id)
+  }, [isRunning])
 
   // TODO 3a: Pass `{ hour12: !use24Hour, hour: '2-digit', minute: '2-digit', second: '2-digit' }`
-  const formattedTime = now.toLocaleTimeString('en-US')
+  const formattedTime = now.toLocaleTimeString('en-US', { 
+    hour12: !use24Hour, 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit',
+  })
   const formattedDate = now.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -95,7 +102,7 @@ export default function Step1IntervalsAndCleanup() {
             System Wall Clock
           </div>
           {/* TODO 3b: Add font-mono tabular-nums so digits never jitter horizontally */}
-          <div className="mt-2 text-3xl font-bold text-white">
+          <div className="mt-2 font-mono tabular-nums text-3xl font-bold text-white">
             {formattedTime}
           </div>
           <div className="mt-1 text-xs text-slate-400">{formattedDate}</div>
@@ -106,7 +113,7 @@ export default function Step1IntervalsAndCleanup() {
             Session Uptime Counter
           </div>
           {/* TODO 3c: Add font-mono tabular-nums to the uptime counter */}
-          <div className="mt-2 text-3xl font-bold text-indigo-400">
+          <div className="mt-2 font-mono tabular-nums text-3xl font-bold text-indigo-400">
             {uptimeSeconds}s
           </div>
           <div className="mt-1 text-xs text-slate-400">

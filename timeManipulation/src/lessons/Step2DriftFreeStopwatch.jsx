@@ -32,7 +32,10 @@ import { useState, useEffect, useRef } from 'react'
 
 function formatStopwatch(ms) {
   // TODO 2: Convert ms into "MM:SS.cc" (e.g., "01:04.85") using Math.floor and .padStart(2, '0')
-  return `${ms}ms`
+  const mm = Math.floor(ms / 60000)
+  const ss = Math.floor((ms % 60000) / 1000)
+  const cc = Math.floor((ms % 1000) / 10)
+  return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}.${String(cc).padStart(2, '0')}`
 }
 
 export default function Step2DriftFreeStopwatch() {
@@ -43,11 +46,11 @@ export default function Step2DriftFreeStopwatch() {
 
   useEffect(() => {
     if (!isRunning) return
-
+    startTimeRef.current = Date.now() - elapsedMs
     // TODO 1: Replace this naive tick-counting interval with the drift-free Date.now() anchor formula!
     const id = setInterval(() => {
-      setElapsedMs((prev) => prev + 100)
-    }, 100)
+      setElapsedMs(Date.now() - startTimeRef.current)
+    }, 20)
 
     return () => clearInterval(id)
   }, [isRunning])
@@ -55,12 +58,19 @@ export default function Step2DriftFreeStopwatch() {
   const handleLap = () => {
     if (!isRunning && elapsedMs === 0) return
     // TODO 3a: Compute splitMs (elapsedMs - previous lap's totalMs) and prepend the new lap to `laps`
+    const previousTotal = laps[0]?.totalMs ?? 0
+    const splitMs = elapsedMs - previousTotal
+    setLaps((prevLaps) => [
+      { lapNumber: prevLaps.length + 1, splitMs, totalMs: elapsedMs },
+      ...prevLaps,
+    ])
   }
 
   const handleReset = () => {
     // TODO 3b: Stop running, reset elapsedMs to 0, and clear laps
     setIsRunning(false)
     setElapsedMs(0)
+    setLaps([])
   }
 
   return (
@@ -128,7 +138,7 @@ export default function Step2DriftFreeStopwatch() {
                   <td className="px-6 py-3.5 font-mono text-xs text-indigo-300">
                     Lap #{lap.lapNumber}
                   </td>
-                  <td className="px-6 py-3.5 text-right font-mono tabular-nums text-slate-200">
+                  <td className="px-6 py-3.5 text-right font-mono tabular-nums text-green-400">
                     +{formatStopwatch(lap.splitMs)}
                   </td>
                   <td className="px-6 py-3.5 text-right font-mono tabular-nums font-medium text-white">
